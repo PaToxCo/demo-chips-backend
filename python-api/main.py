@@ -184,7 +184,7 @@ async def send_session_update(openai_ws):
             "audio": {
                 "input": {
                     "format": {"type": "audio/pcmu"},
-                    "turn_detection": {"type": "server_vad"},
+                    "turn_detection": {"type": "server_vad", "create_response": True, "interrupt_response": True},
                 },
                 "output": {
                     "format": {"type": "audio/pcmu"},
@@ -301,7 +301,7 @@ async def relay_openai_to_twilio(openai_ws, twilio_ws: WebSocket, get_sid):
 
             else:
                 # Uncomment to log every OpenAI event type during debugging:
-                # print(f"[openai] Event: {event_type}")
+                print(f"[openai] Event: {event_type}")
                 pass
 
     except Exception as exc:
