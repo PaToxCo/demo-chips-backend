@@ -1,6 +1,6 @@
 kind = "api"
 previewPath = "/"
-title = "API Server"
+title = "FastAPI Server"
 version = "1.0.0"
 id = "3B4_FFSkEVBkAeYMFRJ2e"
 
@@ -37,3 +37,8 @@ paths = ["/"]
 
 [services.development]
 run = "cd /home/runner/workspace/python-api && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+
+[services.production]
+
+[services.production.run]
+args = ["sh", "-c", "cd /home/runner/workspace/python-api && uvicorn main:app --host 0.0.0.0 --port $PORT"]
