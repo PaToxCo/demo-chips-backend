@@ -171,7 +171,7 @@ async def media_stream(twilio_ws: WebSocket):
 
 async def send_session_update(openai_ws):
     """
-    Configure the OpenAI Realtime session:
+    Configure the OpenAI Realtime session (GA format):
     - g711_ulaw audio format (required for Twilio compatibility)
     - Server-side VAD (voice activity detection) so OpenAI knows when to respond
     - Spanish sales assistant instructions
@@ -179,17 +179,22 @@ async def send_session_update(openai_ws):
     session_update = {
         "type": "session.update",
         "session": {
-            "turn_detection": {"type": "server_vad"},
-            "input_audio_format": "g711_ulaw",
-            "output_audio_format": "g711_ulaw",
-            "voice": AI_VOICE,
+            "type": "realtime",
             "instructions": SYSTEM_PROMPT,
-            "modalities": ["text", "audio"],
-            "temperature": 0.8,
+            "audio": {
+                "input": {
+                    "format": {"type": "audio/pcmu"},
+                    "turn_detection": {"type": "server_vad"},
+                },
+                "output": {
+                    "format": {"type": "audio/pcmu"},
+                    "voice": AI_VOICE,
+                },
+            },
         },
     }
     await openai_ws.send(json.dumps(session_update))
-    print("[openai] Sent session.update (voice, instructions, g711_ulaw format).")
+    print("[openai] Sent session.update (GA format, voice, instructions, g711_ulaw).")
 
 
 async def relay_twilio_to_openai(twilio_ws: WebSocket, openai_ws, set_sid):
@@ -249,8 +254,8 @@ async def relay_openai_to_twilio(openai_ws, twilio_ws: WebSocket, get_sid):
 
     OpenAI events we handle:
       - 'session.updated'         : Confirmation that session config was applied
-      - 'response.audio.delta'    : Audio chunk to send back to Twilio
-      - 'response.audio.done'     : OpenAI finished speaking this turn
+      - 'response.output_audio.delta'    : Audio chunk to send back to Twilio
+      - 'response.output_audio.done'     : OpenAI finished speaking this turn
       - 'input_audio_buffer.*'    : VAD events (logged for debugging)
       - 'error'                   : OpenAI error; logged
     """
