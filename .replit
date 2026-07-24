@@ -1,9 +1,5 @@
 modules = ["nodejs-24", "python-3.11"]
 
-[[ports]]
-localPort = 8000
-externalPort = 80
-
 [deployment]
 router = "application"
 deploymentTarget = "autoscale"
@@ -13,28 +9,6 @@ args = ["pnpm", "store", "prune"]
 env = { "CI" = "true" }
 
 [workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "FastAPI Server"
-
-[[workflows.workflow]]
-name = "FastAPI Server"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd python-api && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-waitForPort = 8000
-
-[workflows.workflow.metadata]
-outputType = "webview"
 
 [agent]
 stack = "PNPM_WORKSPACE"
