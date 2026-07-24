@@ -142,7 +142,6 @@ async def media_stream(twilio_ws: WebSocket):
     # Open connection to OpenAI Realtime API
     openai_headers = {
         "Authorization": f"Bearer {OPENAI_API_KEY}",
-        "OpenAI-Beta": "realtime=v1",
     }
 
     try:
