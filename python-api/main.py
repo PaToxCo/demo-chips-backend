@@ -352,7 +352,7 @@ async def send_session_update(openai_ws):
             "audio": {
                 "input": {
                     "format": {"type": "audio/pcmu"},
-                    "turn_detection": {"type": "server_vad"},
+                    "turn_detection": {"type": "server_vad", "create_response": True, "interrupt_response": True},
                 },
                 "output": {
                     "format": {"type": "audio/pcmu"},
